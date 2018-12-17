@@ -1,10 +1,13 @@
-# django-cricket
+ 
+django-cricket
+==============
 
 Django-Cricket is a simple app to store cricket match details.
 
 Detailed documentation is in the "docs" directory.
 
-## Quick start
+Quick start
+-----------
 
 1. Add "cricket" to your INSTALLED_APPS setting like this::
 
