@@ -23,7 +23,6 @@ class Club(models.Model):
 
 
 class PCTeam(models.Model):
-    club = models.ForeignKey('Club', on_delete=models.CASCADE)
     pc_id = models.CharField(max_length=8)
     name = models.CharField(max_length=255, default='unsure')
 
@@ -218,14 +217,13 @@ class Player(models.Model):
     # Fields
     player_name = models.CharField(max_length=255)
     player_id = models.CharField(max_length=8)
-    kvcc_player = models.BooleanField()
+    club = models.ForeignKey('Club', on_delete=models.CASCADE)
 
     # MVP Methods
     def get_mvp_scores(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]
-    ):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -244,7 +242,7 @@ class Player(models.Model):
     def get_mvp_score(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets total mvp points for a given team and season '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -255,7 +253,7 @@ class Player(models.Model):
     def bat_mvp_points(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets total number of batting mvp points for a given team and season '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -271,7 +269,7 @@ class Player(models.Model):
     def bowl_mvp_points(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets total number of bowling mvp points for a given team and season '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -287,7 +285,7 @@ class Player(models.Model):
     def field_mvp_points(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets total number of field mvp points for a given team and season '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -341,7 +339,7 @@ class Player(models.Model):
     def percentage_bat_points(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         '''Gets the percentage for mvp points from batting '''
         bat = self.bat_mvp_points(season, teams) or 0
         bowl = self.bowl_mvp_points(season, teams) or 0
@@ -369,7 +367,7 @@ class Player(models.Model):
     def played_game(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Checks if the player has played a game for a given team and season '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -380,7 +378,7 @@ class Player(models.Model):
     def get_games(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of games played by a player '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -392,7 +390,7 @@ class Player(models.Model):
     def has_bowled(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Checks if player has bowled '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -404,7 +402,7 @@ class Player(models.Model):
     def get_wickets(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of wickets taken '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -416,7 +414,7 @@ class Player(models.Model):
     def get_overs(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of overs bowled '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -428,7 +426,7 @@ class Player(models.Model):
     def get_maidens(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of maiden overs bowled '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -440,7 +438,7 @@ class Player(models.Model):
     def get_bowl_runs(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets runs scored against bowler '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -452,7 +450,7 @@ class Player(models.Model):
     def get_5_wickets(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of 5 wicket hauls '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -465,7 +463,7 @@ class Player(models.Model):
     def get_economy(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets bowlers economy '''
         try:
             return self.get_bowl_runs(season, teams) / self.get_overs(season, teams)
@@ -475,7 +473,7 @@ class Player(models.Model):
     def get_bowl_average(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets bowlers average '''
         try:
             return self.get_bowl_runs(season, teams) / self.get_wickets(season, teams)
@@ -486,7 +484,7 @@ class Player(models.Model):
     def has_batted(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Checks if player has batted in given season and team '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -498,7 +496,7 @@ class Player(models.Model):
     def get_runs(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets runs scored by player '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -510,7 +508,7 @@ class Player(models.Model):
     def get_par_runs(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets players par runs '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -522,7 +520,7 @@ class Player(models.Model):
     def get_innings(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times player has batted '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -534,7 +532,7 @@ class Player(models.Model):
     def get_not_outs(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times player has been not out '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -547,7 +545,7 @@ class Player(models.Model):
     def get_average(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets players batting average '''
         try:
             return float(self.get_runs(season, teams)) / float(
@@ -559,7 +557,7 @@ class Player(models.Model):
     def get_50s(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times 50 runs have been scored '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -572,7 +570,7 @@ class Player(models.Model):
     def get_100s(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times 100 runs have been scored '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -585,7 +583,7 @@ class Player(models.Model):
     def get_high_score(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets players highest score '''
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
@@ -597,7 +595,7 @@ class Player(models.Model):
     def get_catches(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -607,7 +605,7 @@ class Player(models.Model):
     def get_fielding_catches(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -618,7 +616,7 @@ class Player(models.Model):
     def get_keeping_catches(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -629,7 +627,7 @@ class Player(models.Model):
     def get_stumpings(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -640,7 +638,7 @@ class Player(models.Model):
     def get_run_outs(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -650,7 +648,7 @@ class Player(models.Model):
     def get_keeping_wickets(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
@@ -661,7 +659,7 @@ class Player(models.Model):
     def get_fielding_wickets(
             self,
             season=[get_current_year()],
-            teams=[v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
+            teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return Performance.objects.filter(
             Q(match__home_team_id__in=teams) | Q(match__away_team_id__in=teams),
             player__id=self.id,
