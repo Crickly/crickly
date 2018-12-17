@@ -4,7 +4,7 @@ django-cricket 🏏
 
 Django-Cricket is a simple app to store cricket match details.
 
-📝**Note**: Development is still in progress and not in a stable state. I doubt it'll work yet! 🤪
+📝 **Note**: Development is still in progress and not in a stable state. I doubt it'll work yet! 🤪
 
 Detailed documentation is in the "docs" directory. (Not produced yet...)
 
