@@ -1,0 +1,216 @@
+{% extends "playcricket/matches/match-template.html" %}
+
+
+{% block match_detail %}
+  {% comment %} Inning 1 data {% endcomment %}
+  {% if inning_1 %}
+    <div class="left">
+      <div>
+        <div class="title">
+          <h3>Inning 1</h3>
+          <div class="caption">
+            {% if inning_1.bat_team_id == match.fk_home_team.pc_id %}{% comment %} Check which way to display batting/bowling team {% endcomment %}
+              <p>Batting: {{ match.fk_home_team.club.name }}</p>
+              <p>Bowling: {{ match.fk_away_team.club.name }}</p>
+            {% else %}
+              <p>Batting: {{ match.fk_away_team.club.name }}</p>
+              <p>Bowling: {{ match.fk_home_team.club.name }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Batsman</th>
+                  <th>How Out</th>
+                  <th>Bowler</th>
+                  <th>Runs</th>
+                  <th>Par Score</th>
+                  <th>Balls</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for bat in inning_1_bat %}{% comment %} Add batsmen to table {% endcomment %}
+                  <tr>
+                    <td>{{ bat.bat_position }}</td>
+                    <td>{{ bat.player.player_name }}</td>
+                    <td>{{ bat.how_out_descriptive }}</td>
+                    <td>{{ bat.bat_out_bowler.player_name }}</td>
+                    <td>{{ bat.bat_runs }}</td>
+                    <td>{{ bat.bat_par_score }}</td>
+                    <td>{{ bat.bat_balls }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% comment %} Extras table {% endcomment %}
+            <table>
+              <tbody>
+                <tr>
+                  <td>Extras</td>
+                  <td>b({{ inning_1.extras_byes }}), lb({{ inning_1.extras_leg_byes }}), w({{ inning_1.extras_wides }}), nb({{ inning_1.extras_no_balls }})</td>
+                  <td>{{ inning_1.extras_total }}</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td></td>
+                  <td>{{ inning_1.runs }}</td>
+                </tr>
+                <tr>
+                  <td>Wickets</td>
+                  <td></td>
+                  <td>{{ inning_1.wickets }} {% if inning_1.declared %}dec{% endif %}</td>
+                </tr>
+                <tr>
+                  <td>Overs</td>
+                  <td></td>
+                  <td>{{ inning_1.overs }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead>
+                <tr>
+                  <th>Bowler</th>
+                  <th>Overs</th>
+                  <th>Maidens</th>
+                  <th>Runs</th>
+                  <th>Wickets</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for bowl in inning_1_bowl %}{% comment %} Add bowlers to table {% endcomment %}
+                  <tr>
+                    <td>{{ bowl.player.player_name }}</td>
+                    <td>{{ bowl.bowl_overs }}</td>
+                    <td>{{ bowl.bowl_maidens }}</td>
+                    <td>{{ bowl.bowl_runs }}</td>
+                    <td>{{ bowl.bowl_wickets_total }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% comment %} Inning 2 {% endcomment %}
+  {% if inning_2 %}
+    <div class="right">
+      <div>
+        <div class="title">
+          <h3>Inning 2</h3>
+          <div class="caption">
+            {% if inning_2.bat_team_id == match.fk_home_team.pc_id %} {% comment %} Check which way bowling/batting team should be {% endcomment %}
+              <p>Batting: {{ match.fk_home_team.club.name }}</p>
+              <p>Bowling: {{ match.fk_away_team.club.name }}</p>
+            {% else %}
+              <p>Batting: {{ match.fk_away_team.club.name }}</p>
+              <p>Bowling: {{ match.fk_home_team.club.name }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>How Out</th>
+                  <th>Bowler</th>
+                  <th>Runs</th>
+                  <th>Par Score</th>
+                  <th>Balls</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for bat in inning_2_bat %}{% comment %} Add batsmen to table {% endcomment %}
+                  <tr>
+                    <td>{{ bat.bat_position }}</td>
+                    <td>{{ bat.player.player_name }}</td>
+                    <td>{{ bat.how_out_descriptive }}</td>
+                    <td>{{ bat.bat_out_bowler.player_name }}</td>
+                    <td>{{ bat.bat_runs }}</td>
+                    <td>{{ bat.bat_par_score }}</td>
+                    <td>{{ bat.bat_balls }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% comment %} Extras Table {% endcomment %}
+            <table>
+              <tbody>
+                <tr>
+                  <td>Extras</td>
+                  <td>b({{ inning_2.extras_byes }}), lb({{ inning_2.extras_leg_byes }}), w({{ inning_2.extras_wides }}), nb({{ inning_1.extras_no_balls }})</td>
+                  <td>{{ inning_2.extras_total }}</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td></td>
+                  <td>{{ inning_2.runs }}</td>
+                </tr>
+                <tr>
+                  <td>Wickets</td>
+                  <td></td>
+                  <td>{{ inning_2.wickets }} {% if inning_2.declared %}dec{% endif %}</td>
+                </tr>
+                <tr>
+                  <td>Overs</td>
+                  <td></td>
+                  <td>{{ inning_2.overs }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead>
+                <tr>
+                  <th>Bowler</th>
+                  <th>Overs</th>
+                  <th>Maidens</th>
+                  <th>Runs</th>
+                  <th>Wickets</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for bowl in inning_2_bowl %}{% comment %} Add bowlers to table {% endcomment %}
+                  <tr>
+                    <td>{{ bowl.player.player_name }}</td>
+                    <td>{{ bowl.bowl_overs }}</td>
+                    <td>{{ bowl.bowl_maidens }}</td>
+                    <td>{{ bowl.bowl_runs }}</td>
+                    <td>{{ bowl.bowl_wickets_total }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if kvcc_players %}
+    <div class="left">
+      <div>
+        <div class="title">
+          <h3>MVP</h3>
+          <div class="caption">
+            <p>MVP points gained this game</p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for player in kvcc_players %}
+              <p><strong>{{ player.mvp_total }}</strong> {{ player.player.player_name }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+  How It Works
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message fantasy">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>How it works</h2>
+      </div>
+    </div>
+  </div>
+  <div class="split-40">
+    <div class="left">
+      <div>
+        <div class="title">
+          <h3>Par Score</h3>
+          <div class="caption">
+            <p>This is the expected par scores</p>
+          </div>
+        </div>
+        <div class="info">
+           <iframe width="600" height="400" src="https://live.amcharts.com/VhODg/embed/" frameborder="0"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

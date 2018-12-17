@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load user_tags %}
+
+{% comment %} Sets <title> {% endcomment %}
+{% block title %}
+  Fantasy Team
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message fantasy">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Fantasy</h2>
+      </div>
+    </div>
+  </div>
+  <div class="split-40">
+    <div class="left your-team">
+      <div>
+        <div class="title">
+          <h3>Your Team</h3>
+          <div class="caption">
+            <p>
+              {% comment %} Checks if user is logged in {% endcomment %}
+              {% if user.is_authenticated %}
+                {% if transfers_open %}
+                  <a href="{% url "fantasyleague:manage" %}">Manage your team</a>
+                {% else %}
+                  <a>Transfers are closed due to matches</a>
+                {% endif %}
+              {% else %}
+                <a href="{% url "fantasyleague:login" %}">Login to manage your team</a>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% comment %} If user is logged in then display their team info. Else display login/signup {% endcomment %}
+            {% if user.is_authenticated %}
+              {% if user|has_team %}
+                <p>
+                  <strong>Team Name</strong>
+                  <span>{{ team.team_name }}</span>
+                </p>
+                <p>
+                  <strong>Team Value</strong>
+                  <span>£{{ total_team_value|floatformat }} million</span>
+                </p>
+                <p>
+                  <strong>Total Points</strong>
+                  <span> {{ team.get_points|floatformat }} Points</span>
+                </p>
+                <p>
+                  <strong>Points Last Week</strong>
+                  <span> {{ last_week_total_points|floatformat }} Points</span>
+                </p>
+                {% if best_player_last_week %}{% comment %} Check if there was a best player last week {% endcomment %}
+                  <p>
+                    <strong>Best Player This Week</strong>
+                    <span> {{ best_player_last_week.name }} - {{ best_player_last_week.points|floatformat }} points</span>
+                  </p>
+                {% endif %}
+                {% if best_player_all_time %}{% comment %} Check if there is a best player of all time. Usually only missing before start of season {% endcomment %}
+                  <p>
+                    <strong> Best Player This Season</strong>
+                    <span> {{ best_player_all_time.name }} - {{ best_player_all_time.points|floatformat }} points</span>
+                  </p>
+                {% endif %}
+              {% else %}
+                <p>You need to select your team</p>
+              {% endif %}
+            {% else %}
+              <p>
+                <a href="{% url "fantasyleague:login" %}">Login</a>
+                or
+                <a href="{% url "fantasyleague:register" %}">signup</a>
+                to view your team
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %} Top Teams {% endcomment %}
+    <div class="right top-teams">
+      <div>
+        <div class="title">
+          <h3>Teams</h3>
+          <div class="caption">
+            <p><a href="{% url "fantasyleague:teams" %}">Top Teams {{ current_season }}</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for t in top_teams %}{% comment %} Loop all top teams {% endcomment %}
+              <p>
+                <strong>{{ t.get_points|floatformat }} Points </strong>
+                <a href="{{ t.get_url }}">{{ t.team_name }}</a>
+              </p>
+            {% empty %} {% comment %} If top teams is empty {% endcomment %}
+              <p>There are no teams registered yet in {{ current_season }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %} Top Batsmen {% endcomment %}
+    <div class="left batsmen">
+      <div>
+        <div class="title">
+          <h3>Batsmen</h3>
+          <div class="caption">
+            <p>Top Batsmen {{ current_season }}. <a href="{% url "fantasyleague:players" %}">See all top players</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for player in top_batsmen %}{% comment %} Loop all top_batsmen {% endcomment %}
+              <p>
+                <strong>{{ player.bat|floatformat }} points</strong>
+                <a>{{ player.player_name }}</a>
+              </p>
+            {% empty %}{% comment %} If top_batsmen is empty {% endcomment %}
+              <p>There has been no fantasy performances in {{ current_season }} yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %} Top Bowlers {% endcomment %}
+    <div class="right bowlers">
+      <div>
+        <div class="title">
+          <h3>Bowlers</h3>
+          <div class="caption">
+            <p>Top Bowlers {{ current_season }}. <a href="{% url "fantasyleague:players" %}">See all top players</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for player in top_bowlers %}{% comment %} Loop all top_bowlers {% endcomment %}
+              <p>
+                <strong>{{ player.bowl|floatformat }} points</strong>
+                <a>{{ player.player_name }}</a>
+              </p>
+              {% empty %}{% comment %} If top_bowlers is empty {% endcomment %}
+              <p>There has been no fantasy performances in {{ current_season }} yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="left fielders">
+      <div>
+        <div class="title">
+          <h3>Fielders</h3>
+          <div class="caption">
+            <p>Top Fielders {{ current_season }}. <a href="{% url "fantasyleague:players" %}">See all top players</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for player in top_fielders %}{% comment %} Loop all top_fielders {% endcomment %}
+              <p>
+                <strong>{{ player.field|floatformat }} points</strong>
+                <a>{{ player.player_name }}</a>
+              </p>
+            {% empty %}
+              <p>There has been no fantasy performances in {{ current_season }} yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

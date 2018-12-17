@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  {{ match.fk_home_team.club.name }} {{ match.fk_home_team.name }} Vs {{ match.fk_away_team.club.name }} {{ match.fk_away_team.name }}
+{% endblock %}
+
+{% block content %}
+  <div class="outter-wrapper body-wrapper">
+    <div class="wrapper ad-pad clearfix">
+      <div class="main-content col-1-1 right last">
+        <div>
+          <div class="title">
+            <h3>Details</h3>
+            <div class="caption">
+              <p></p>
+            </div>
+          </div>
+          <div class="info">
+            <div>{% comment %} Add base match data {% endcomment %}
+              <p><strong>Date</strong> {{ match.fk_date.get_date|date:"jS F Y" }}</p>
+              {% if match.fk_ground.name != '' and match.fk_ground.id != 1 %}
+                <p><strong>Ground</strong> {{ match.fk_ground.name }}</p>
+              {% endif %}
+              <p><strong>Home</strong> {{ match.fk_home_team.club.name }} {{ match.fk_home_team.name }}</p>
+              <p><strong>Away</strong> {{ match.fk_away_team.club.name }} {{ match.fk_away_team.name }}</p>
+              <p><strong>Result</strong> {{ match.result_description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% comment %} Add match detail {% endcomment %}
+      {% block match_detail %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}

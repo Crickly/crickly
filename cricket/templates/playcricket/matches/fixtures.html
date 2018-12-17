@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  Fixtures
+{% endblock %}
+
+{% block content %}
+  <div class="outter-wrapper body-wrapper">
+    <div class="wrapper ad-pad clearfix">
+      <div class="main-content col-1-1 right last">
+        <h1>Fixtures</h1>
+        <div class="search-bar">
+          <div class="options">
+            <select name="period" id="periodSelect">
+              <option value="wk">1 Week</option>
+              <option value="mth">1 Month</option>
+              <option value="sn">Season</option>
+            </select>
+          </div>
+          <div class="search-button">
+            <input type="submit" value="Search" onclick="fixtureSearch()"/>
+          </diV>
+        </div>
+        <div class="match-list">
+          <table id="match-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Home</th>
+                <th>Away</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if matches %}{% comment %} Check if there are matches to add to table {% endcomment %}
+                {% for match in matches %}{% comment %} Add matches to table {% endcomment %}
+                  <tr>
+                    <td>{{ match.fk_date.get_date|date:"d.m" }}</td>{% comment %} Format Date nicely {% endcomment %}
+                    <td>{{ match.fk_home_team.club.name }}<br>{{ match.fk_home_team.name }}</td>
+                    <td>{{ match.fk_away_team.club.name }}<br>{{ match.fk_away_team.name }}</td>
+                    <td><a href="/matches/{{ match.id }}/">Link</a></td>
+                  </tr>
+                {% endfor %}
+              {% endif %}
+            </tbody>
+          </table>
+          {% if matches %}
+            <p id="matches-error-message" style="display:none">Could not find any matches</p>
+          {% else %}
+            <p id="matches-error-message">Could not find any matches</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

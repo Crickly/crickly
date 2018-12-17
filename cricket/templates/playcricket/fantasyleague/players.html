@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  Fantasy Players
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message fantasy">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Fantasy Players</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block fantasy-players">
+    <div class="player-list">
+      {% comment %} Display bowlers {% endcomment %}
+      <h3>Bowlers</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Value</th>
+            <th>Fantasy Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in bowlers %}{% comment %} Add players to table {% endcomment %}
+            <tr>
+              <td>{{ player.player.player_name }}</td>
+              <td>{{ player.value }}</td>
+              <td>{{ player.player.get_mvp_score|floatformat }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if not bowlers %}
+        <p>Could not find any fantasy performances for {{ current_season }}</p>
+      {% endif %}
+      {% comment %} Display batsmen {% endcomment %}
+      <h3>Batsmen</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Value</th>
+            <th>Fantasy Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in batsmen %}{% comment %} Add players to table {% endcomment %}
+            <tr>
+              <td>{{ player.player.player_name }}</td>
+              <td>{{ player.value }}</td>
+              <td>{{ player.player.get_mvp_score|floatformat }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if not batsmen %}
+        <p>Could not find any fantasy performances for {{ current_season }}</p>
+      {% endif %}
+      {% comment %} Display all rounders {% endcomment %}
+      <h3>All rounders</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Value</th>
+            <th>Fantasy Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in all_rounders %}{% comment %} Add players to table {% endcomment %}
+            <tr>
+              <td>{{ player.player.player_name }}</td>
+              <td>{{ player.value }}</td>
+              <td>{{ player.player.get_mvp_score|floatformat }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if not all_rounders %}
+        <p>Could not find any fantasy performances for {{ current_season }}</p>
+      {% endif %}
+      {% comment %} Display Keepers {% endcomment %}
+      <h3>Keepers</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Player Name</th>
+            <th>Value</th>
+            <th>Fantasy Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in keepers %} {% comment %} Add players to table {% endcomment %}
+            <tr>
+              <td>{{ player.player.player_name }}</td>
+              <td>{{ player.value }}</td>
+              <td>{{ player.player.get_mvp_score|floatformat }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if not keepers %}
+        <p>Could not find any fantasy performances for {{ current_season }}</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

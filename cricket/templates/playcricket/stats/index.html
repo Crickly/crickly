@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  Stats
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message stats">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Stats</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block split-40 events">
+    {% comment %} Top Batsmen {% endcomment %}
+    <div class="left recent">
+      <div>
+        <div class="title">
+          <h3>Batting</h3>
+          <div class="caption">
+            <p>Top run scorers {{ current_season }}</p>
+            <p><a href="/stats/batting/">See all the batting stats</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% if top_run_scorers %}
+              {% for player in top_run_scorers %} {% comment %} Add batsmen to html {% endcomment %}
+                <p>
+                  <strong>{{ player.get_runs }} runs</strong>
+                  <a>{{ player.player_name }}</a>
+                </p>
+              {% endfor %}
+            {% else %}
+            <p>There have been no runs in {{ current_season }} yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %} Top Bowlers {% endcomment %}
+    <div class="right upcoming">
+      <div>
+        <div class="title">
+          <h3>Bowling</h3>
+          <div class="caption">
+            <p>Top wicket takers {{ current_season }}</p>
+            <p><a href="/stats/bowling/">See all the bowling stats</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% if top_wicket_takers %}
+              {% for player in top_wicket_takers %}{% comment %} Add bowlers to html {% endcomment %}
+                <p><strong>{{ player.get_wickets }} wickets</strong> <a>{{ player.player_name }}</a></p>
+              {% endfor %}
+            {% else %}
+              <p>There have been no wickets in {{ current_season }} yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% comment %} Top Fielders {% endcomment %}
+    <div class="left recent">
+      <div>
+        <div class="title">
+          <h3>Fielding</h3>
+          <div class="caption">
+            <p>Top catch takers {{ current_season }}</p>
+            <p><a href="/stats/fielding/">See all the fielding stats</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% if top_catch_takers %}
+              {% for player in top_catch_takers %} {% comment %} Add fielders to html {% endcomment %}
+                <p><strong>{{ player.get_catches }} catches</strong> <a>{{ player.player_name }}</a></p>
+              {% endfor %}
+            {% else %}
+            <p>There have been no catches in {{ current_season }} yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

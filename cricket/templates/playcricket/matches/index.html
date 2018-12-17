@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  Matches
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message matches">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Matches</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block split-40 events">
+    <div class="right recent">
+      <div>
+        <div class="title">
+          <h3>Recent</h3>
+          <div class="caption">
+            <p>How did we perform?</p>
+            <p><a href="/matches/results/">See more results</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for match in recent_matches %}{% comment %} Added 5 most recent matches to page {% endcomment %}
+              <p><strong>{{ match.fk_date.get_date|date:"d.m" }}</strong> <a href="/matches/{{ match.id }}/">{{ match.match_description }}</a></p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="left upcoming">
+      <div>
+        <div class="title">
+          <h3>Upcoming</h3>
+          <div class="caption">
+            <p>Where we are playing next</p>
+            <p><a href="/matches/fixtures/">See more fixtures</a></p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% if upcoming_matches %}
+              {% for match in upcoming_matches %}{% comment %} Add matches in the next week to the page {% endcomment %}
+                <p><strong>{{ match.fk_date.get_date|date:"d.m" }}</strong> <a href="/matches/{{ match.id }}/">{{ match.match_description }}</a></p>
+              {% endfor %}
+            {% else %}
+              <p>We dont have any games coming up</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

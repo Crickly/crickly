@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% comment %} Sets <title>{% endcomment %}
+{% block title %}
+  Activate
+{% endblock %}
+
+
+{% block content %}
+  <div class="block title-message fantasy">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Activate</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block">
+    <div class="block-content">
+      {% if success %}{% comment %} Checks if the account activation worked. Displays message accordingly {% endcomment %}
+        <p>Your account has been activated.
+          <a href="{% url "fantasyleague:manage" %}">Login</a>
+        </p>
+      {% else %}
+        <p>Your account failed to activate</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

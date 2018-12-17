@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}
+  Register
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message fantasy">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Register</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block registration form">
+    <div class="block-content">
+      {% if registered %}{% comment %} Check if registration was successful {% endcomment %}
+        <h3>You have registered! You now need to activate your account using the link in your email.</h3>
+        <p><a href="{% url "fantasyleague:manage" %}">Manage your team</a></p>
+      {% else %}
+        <form method="post" action="{% url "fantasyleague:register" %}">
+          {% csrf_token %}{% comment %} CSRF Verification {% endcomment %}
+          {{ user_form.as_p }}{% comment %} Insert forn into HTML {% endcomment %}
+
+          <input type="submit" name="submit" value="Register">
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

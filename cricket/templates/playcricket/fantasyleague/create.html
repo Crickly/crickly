@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="block title-message matches">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>Create Your Team</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block login form">
+    <div class="block-content">
+      <p>{{ message }}</p>
+      <form action="{% url "fantasyleague:create" %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="team-name">
+        <script
+          src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="pk_test_50icTDCqQNzBDftcrhb0ldzW"
+          data-amount="1000"
+          data-name="Knowle Village CC"
+          data-description="Fantasy League"
+          data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+          data-locale="auto"
+          data-zip-code="true"
+          data-billing-address="true"
+          data-currency="gbp"
+          data-email="{{ request.user.email }}"
+          data-allow-remember-me="false">
+        </script>
+      </form>
+    </div>
+  </div>
+{% endblock %}

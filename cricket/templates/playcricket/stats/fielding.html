@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  Fielding Stats
+{% endblock %}
+
+{% block content %}
+  <div class="outter-wrapper body-wrapper">
+    <div class="wrapper ad-pad clearfix">
+      <div class="main-content col-1-1 right last">
+        <h1>Fielding Stats</h1>
+        <div class="search-bar">
+          <div class="options">{% comment %} Filter Options {% endcomment %}
+            <select name="year" id="yearSelect">
+              <option value="all">All</option>
+              {% for season in seasons %}
+                <option value="{{ season }}" {% if forloop.first %}selected{% endif %}>{{ season }}</option>
+              {% endfor %}
+            </select>
+            <select name="team" id="teamSelect">
+              <option value="all" selected>All</option>
+              {% for team in teams %}
+                <option value="{{ team.team_id }}">{{ team.team_name }}</option>
+              {% endfor %}
+            </select>
+            <select name="order-by" id="orderbySelect">
+              <option value="name">Name</option>
+              <option value="games">Games</option>
+              <option value="wk_catches">Wicket Keeping Catches</option>
+              <option value="wk_stumpings">Stumpings</option>
+              <option value="wk_total">Total Wicket Keeping Wickets</option>
+              <option value="fld_catches">Fielding Catches</option>
+              <option value="fld_run_outs">Run Outs</option>
+              <option value="fld_total" selected>Total Fielding Wickets</option>
+              <option value="fantasy">Fantasy Points</option>
+            </select>
+            <select name="display-count" id="displaycountSelect">
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+          <div class="search-button">
+            <input type="submit" value="Search" onclick="fieldingStatsSearch()"/>
+          </div>
+        </div>
+        <div class="stats-list">
+          <table id="stats-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Games</th>
+                <th>Wicket Keeping Catches</th>
+                <th>Stumpings</th>
+                <th>Total Wicket Keeping Wickets</th>
+                <th>Fielding Catches</th>
+                <th>Run Outs</th>
+                <th>Total Fielding Wickets</th>
+                <th>Fantasy Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for player in players %}{% comment %} Add Fielders to table {% endcomment %}
+                <tr>
+                  <td>{{ player.player_name }}</td>
+                  <td>{{ player.get_games }}</td>
+                  <td>{{ player.get_keeping_catches }}</td>
+                  <td>{{ player.get_stumpings }}</td>
+                  <td>{{ player.get_keeping_wickets }}</td>
+                  <td>{{ player.get_fielding_catches }}</td>
+                  <td>{{ player.get_run_outs }}</td>
+                  <td>{{ player.get_fielding_wickets }}</td>
+                  <td>{{ player.field_mvp_points|floatformat }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if players %}
+            <p id="stats-error-message" style="display:none">Could not find any stats</p>
+          {% else %}
+            <p id="stats-error-message">Could not find any stats</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

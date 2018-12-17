@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% comment %} Set <title> {% endcomment %}
+{% block title %}
+  {{ team.team_name }} | Fantasy Team
+{% endblock %}
+
+{% block content %}
+  <div class="block title-message fantasy">
+    <div class="overlay">
+      <div class="block-content">
+        <h2>{{ team.team_name }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="block split-40 fantasy-players">
+    <div class="left">
+      <div>
+        <div class="title">
+          <h3>Team</h3>
+          <div class="caption">
+            <p>Manager: {{ team.user.first_name }} {{ team.user.last_name }}</p>
+            <p>Captain: {{ team.get_captain.player.player_name }}</p>
+            <p>Team Value: {{ team.current_value }}</p>
+            <p>Points: {{ team.get_points }}</p>
+            <p>Points Last Week: {{ team.last_week_points }}</p>
+          </div>
+        </div>
+        <div class="info">
+          <div>
+            {% for player in team.current_players %}
+              <p>
+                <strong>{{ player.get_points|floatformat }} points</strong>
+                <span>{{ player.player.player_name }}</span>
+              </p>
+            {% empty %}
+              <p>There are no players in the team yet</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
