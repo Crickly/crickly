@@ -58,9 +58,17 @@ class MatchDate(models.Model):
         return str(self.year) + '/' + str(self.month) + '/' + str(self.day)
 
 
+class League(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Competition(models.Model):
     name = models.CharField(max_length=255)
     competition_type = models.CharField(max_length=32)
+    league = models.ForeignKey('League', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
