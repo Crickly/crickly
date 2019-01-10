@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 from datetime import date
 
 # Project imports
-from cricket.models import Player, PlayCricketTeam
+from cricket.models import Player, Team
 from cricket.views.api import BaseView
 from cricket.views.exceptions import AbstractClassError, kwargError
 
@@ -48,11 +48,11 @@ class View(BaseView):
 
     def validate_team(self, team):
         if team != 'all':
-            current_teams = PlayCricketTeam.objects.values_list('team_id', flat=True)
+            current_teams = Team.objects.filter(club__home_club=True).values_list('id', flat=True)
             if team not in current_teams:
                 raise kwargError(
                     'Team not a valid option ({})'.format(
-                        '/'.join(current_teams)
+                        '/'.join(map(str, current_teams))
                     )
                 )
 
@@ -77,7 +77,7 @@ class View(BaseView):
     def get_teams(self):
         team = self.get_kwarg('team')
         if team == 'all':
-            team = PlayCricketTeam.objects.values_list('team_id', flat=True)
+            team = Team.objects.filter(club__home_club=True).values_list('id', flat=True)
         else:
             team = [team]
         return team
@@ -90,7 +90,7 @@ class View(BaseView):
         return self.order_by_functions[order_by]
 
     def get_players(self):
-        return Player.objects.filter(kvcc_player=True)
+        return Player.objects.filter(club__home_club=True)
 
     def get_sorted_players(self, years, teams):
         f = self.get_order_by_function()

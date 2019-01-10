@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
+
+# Django Imports
 from django.db import models
 from django.db.models import Sum, F, Max, Q
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.utils import timezone
 from django.core.urlresolvers import reverse
-import pytz
-import warnings
 
-from datetime import date, timedelta, datetime
+# 3rd Party Imports
+import pytz
+
+# Python Imports
+from datetime import date, datetime
+import warnings
 
 
 def get_current_year():
@@ -17,21 +19,27 @@ def get_current_year():
 
 
 class Club(models.Model):
-    pc_id = models.CharField(max_length=8)
     name = models.CharField(max_length=255)
-    pc_slug = models.CharField(max_length=255)
+    home_club = models.BooleanField()
+
+    def __str__(self):
+        return self.name
 
 
-class PCTeam(models.Model):
+class Team(models.Model):
     club = models.ForeignKey('Club', on_delete=models.CASCADE)
-    pc_id = models.CharField(max_length=8)
     name = models.CharField(max_length=255, default='unsure')
+
+    def __str__(self):
+        return str(self.club) + ' - ' + self.name
 
 
 class Ground(models.Model):
     club = models.ForeignKey('Club', on_delete=models.CASCADE)
-    pc_id = models.CharField(max_length=8)
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return str(self.club) + ' - ' + self.name
 
 
 class MatchDate(models.Model):
@@ -46,32 +54,59 @@ class MatchDate(models.Model):
     def get_datetime(self):
         return datetime(self.year, self.month, self.day, 12, 0, 0, 0, pytz.UTC)
 
+    def __str__(self):
+        return str(self.year) + '/' + str(self.month) + '/' + str(self.day)
+
 
 class Competition(models.Model):
-    pc_id = models.CharField(max_length=8)
     name = models.CharField(max_length=255)
     competition_type = models.CharField(max_length=32)
 
+    def __str__(self):
+        return self.name
+
 
 class Umpire(models.Model):
-    pc_id = models.CharField(max_length=31)
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class UmpireAssignment(models.Model):
     umpire = models.ForeignKey('Umpire', on_delete=models.CASCADE)
     match = models.ForeignKey('Match', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.umpire) + ' - ' + str(self.match)
+
+
+class Scorer(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class ScorerAssignment(models.Model):
+    scorer = models.ForeignKey('Scorer', on_delete=models.CASCADE)
+    match = models.ForeignKey('Match', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.scorer) + ' - ' + str(self.match)
+
 
 # Match model.
 # Used for storing data about matches
 class Match(models.Model):
-    fk_team = models.ForeignKey('PlayCricketTeam', on_delete=models.CASCADE)
-    fk_competition = models.ForeignKey('Competition', on_delete=models.CASCADE)
-    fk_date = models.ForeignKey('MatchDate', on_delete=models.CASCADE)
-    fk_ground = models.ForeignKey('Ground', on_delete=models.CASCADE)
-    fk_home_team = models.ForeignKey('PCTeam', on_delete=models.CASCADE, related_name='home_team')
-    fk_away_team = models.ForeignKey('PCTeam', on_delete=models.CASCADE, related_name='away_team')
+    class Meta:
+        verbose_name_plural = "matches"
+    # team = models.ForeignKey('PlayCricketTeam', on_delete=models.CASCADE)
+    competition = models.ForeignKey('Competition', on_delete=models.CASCADE)
+    date = models.ForeignKey('MatchDate', on_delete=models.CASCADE)
+    ground = models.ForeignKey('Ground', on_delete=models.CASCADE)
+    home_team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='home_team')
+    away_team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='away_team')
 
     # Status
     status = models.CharField(max_length=10)
@@ -80,7 +115,6 @@ class Match(models.Model):
     # Match Data
     match_type = models.CharField(max_length=64)
     game_type = models.CharField(max_length=32)
-    match_id = models.CharField(max_length=8, unique=True)
 
     # Toss
     toss_won_by_team_id = models.CharField(max_length=8)
@@ -99,38 +133,37 @@ class Match(models.Model):
     processing_issue = models.BooleanField(default=False)
 
     # METHODS
-    def new_match_description(self):
-        warnings.warn('new_match_description will be deprecated', DeprecationWarning)
-        return self.match_description()
-
     def match_description(self):
         ''' Creates a descriptive detail of the match '''
-        if self.fk_home_team.club.pc_id == settings.PC_CLUB_ID:
-            return self.fk_home_team.name + ' vs ' + self.fk_away_team.club.name + ' ' + self.fk_away_team.name
+        warnings.warn('match_description not setup correctly', UserWarning)
+        if True:  # self.home_team.club.pc_id == settings.PC_CLUB_ID:
+            return self.home_team.name + ' vs ' + self.away_team.club.name + ' ' + self.away_team.name
         else:
-            return self.fk_away_team.name + ' vs ' + self.fk_home_team.club.name + ' ' + self.fk_home_team.name
+            return self.away_team.name + ' vs ' + self.home_team.club.name + ' ' + self.home_team.name
 
     def is_live_score(self):
         return self.result == 'M'
 
     def __str__(self):
         # Gives useful info when using shell
-        return self.match_id
+        return str(self.date) + ': vs ' + self.opposition()
 
     def get_absolute_url(self):
         return reverse('matches:match', kwargs={'match_id': self.id})
 
     def opposition(self):
-        if self.fk_home_team.club.pc_id == settings.PC_CLUB_ID:
-            return self.fk_away_team.club.name
+        warnings.warn('opposition not setup correctly', UserWarning)
+        if True:  # self.home_team.club.pc_id == settings.PC_CLUB_ID:
+            return str(self.away_team)
         else:
-            return self.fk_home_team.club.name
+            return str(self.home_team)
 
     def site_team(self):
-        if self.fk_home_team.club.pc_id == settings.PC_CLUB_ID:
-            return self.fk_home_team.name
+        warnings.warn('site_team not setup correctly', UserWarning)
+        if True:  # self.home_team.club.pc_id == settings.PC_CLUB_ID:
+            return self.home_team.name
         else:
-            return self.fk_away_team.name
+            return self.away_team.name
 
     def innings(self):
         innings = Inning.objects.filter(match_id=self.id)
@@ -162,6 +195,7 @@ class Inning(models.Model):
     extras_total = models.IntegerField(default=0)
     highlights = models.TextField(default='')
     complete_innings = models.BooleanField(default=False)
+    inning_no = models.IntegerField(default=0)
 
     def get_inning_no(self):
         if self.match.batted_first == self.bat_team_id:
@@ -170,10 +204,13 @@ class Inning(models.Model):
             return 2
 
     def bat_team_name(self):
-        return PCTeam.objects.filter(pc_id=self.bat_team_id)[0].club.name
+        return Team.objects.filter(pc_id=self.bat_team_id)[0].club.name
 
     def bowl_team_name(self):
         return 'This hasnt been implemented'
+
+    def __str__(self):
+        return 'Inning ' + str(self.inning_no) + ': ' + str(self.match)
 
 
 # Player Model
@@ -181,8 +218,10 @@ class Inning(models.Model):
 class Player(models.Model):
     # Fields
     player_name = models.CharField(max_length=255)
-    player_id = models.CharField(max_length=8)
     club = models.ForeignKey('Club', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.club) + ': ' + self.player_name
 
     # MVP Methods
     # def get_mvp_scores(
@@ -190,9 +229,9 @@ class Player(models.Model):
     #         season=[get_current_year()],
     #         teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
     #     return MVPPerformance.objects.filter(
-    #         Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+    #         Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
     #         player__id=self.id,
-    #         match__fk_match_date__year__in=season,
+    #         match__date__year__in=season,
     #     ).aggregate(
     #         total=Sum('mvp_total'),
     #         bat=Sum((F('mvp_bat_runs') + F('mvp_bat_parscorebonus')) * 10),
@@ -210,9 +249,9 @@ class Player(models.Model):
     #         teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
     #     ''' Gets total mvp points for a given team and season '''
     #     return MVPPerformance.objects.filter(
-    #         Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+    #         Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
     #         player__id=self.id,
-    #         match__fk_match_date__year__in=season
+    #         match__date__year__in=season
     #     ).aggregate(Sum('mvp_total'))['mvp_total__sum']
 
     # def bat_mvp_points(
@@ -221,9 +260,9 @@ class Player(models.Model):
     #         teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
     #     ''' Gets total number of batting mvp points for a given team and season '''
     #     return MVPPerformance.objects.filter(
-    #         Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+    #         Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
     #         player__id=self.id,
-    #         match__fk_match_date__year__in=season,
+    #         match__date__year__in=season,
     #         bat=True,
     #     ).aggregate(
     #         total=Sum((
@@ -237,9 +276,9 @@ class Player(models.Model):
     #         teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
     #     ''' Gets total number of bowling mvp points for a given team and season '''
     #     return MVPPerformance.objects.filter(
-    #         Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+    #         Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
     #         player__id=self.id,
-    #         match__fk_match_date__year__in=season,
+    #         match__date__year__in=season,
     #         bowl=True,
     #     ).aggregate(
     #         total=Sum((
@@ -253,9 +292,9 @@ class Player(models.Model):
     #         teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
     #     ''' Gets total number of field mvp points for a given team and season '''
     #     return MVPPerformance.objects.filter(
-    #         Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+    #         Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
     #         player__id=self.id,
-    #         match__fk_match_date__year__in=season,
+    #         match__date__year__in=season,
     #     ).aggregate(
     #         total=Sum((
     #             F('mvp_field_assisted') + F('mvp_field_unassisted')
@@ -335,9 +374,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Checks if the player has played a game for a given team and season '''
         return Performance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season
+            match__date__year__in=season
         ).count() != 0
 
     def get_games(
@@ -346,9 +385,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of games played by a player '''
         return Performance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
         ).count()
 
     # Bowling Stats Methods
@@ -358,9 +397,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Checks if player has bowled '''
         return BowlPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bowl=True,
         ).count() != 0
 
@@ -370,9 +409,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of wickets taken '''
         return BowlPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bowl=True
         ).aggregate(Sum('bowl_wickets_total'))['bowl_wickets_total__sum']
 
@@ -382,9 +421,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of overs bowled '''
         return BowlPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bowl=True
         ).aggregate(Sum('bowl_overs'))['bowl_overs__sum']
 
@@ -394,9 +433,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of maiden overs bowled '''
         return BowlPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bowl=True
         ).aggregate(Sum('bowl_maidens'))['bowl_maidens__sum']
 
@@ -406,9 +445,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets runs scored against bowler '''
         return BowlPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bowl=True
         ).aggregate(Sum('bowl_runs'))['bowl_runs__sum']
 
@@ -418,9 +457,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of 5 wicket hauls '''
         return BowlPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bowl=True,
             bowl_wickets_total__gte=5,
         ).count()
@@ -452,9 +491,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Checks if player has batted in given season and team '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bat=True,
         ).count() != 0
 
@@ -464,9 +503,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets runs scored by player '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bat=True,
         ).aggregate(Sum('bat_runs'))['bat_runs__sum']
 
@@ -476,9 +515,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets players par runs '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bat=True,
         ).aggregate(Sum('bat_par_score'))['bat_par_score__sum']
 
@@ -488,9 +527,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times player has batted '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bat=True,
         ).count()
 
@@ -500,9 +539,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times player has been not out '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__season__in=season,
+            match__date__season__in=season,
             bat=True,
             bat_how_out='no',
         ).count()
@@ -525,9 +564,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times 50 runs have been scored '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bat=True,
             bat_runs__range=[50, 99],
         ).count()
@@ -538,9 +577,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets number of times 100 runs have been scored '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             bat=True,
             bat_runs__gte=100,
         ).count()
@@ -551,9 +590,9 @@ class Player(models.Model):
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         ''' Gets players highest score '''
         return BatPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
         ).aggregate(Max('bat_runs'))['bat_runs__max']
 
     # Fielding Stats Methods
@@ -562,9 +601,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season
+            match__date__year__in=season
         ).aggregate(Sum('field_catches'))['field_catches__sum']
 
     def get_fielding_catches(
@@ -572,9 +611,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             wicket_keeper=False
         ).aggregate(Sum('field_catches'))['field_catches__sum'] or 0
 
@@ -583,9 +622,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             wicket_keeper=True
         ).aggregate(Sum('field_catches'))['field_catches__sum'] or 0
 
@@ -594,9 +633,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             wicket_keeper=True
         ).aggregate(Sum('field_stumped'))['field_stumped__sum'] or 0
 
@@ -605,9 +644,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season
+            match__date__year__in=season
         ).aggregate(Sum('field_run_outs'))['field_run_outs__sum'] or 0
 
     def get_keeping_wickets(
@@ -615,9 +654,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             wicket_keeper=True
         ).aggregate(total=Sum(F('field_catches') + F('field_stumped')))['total'] or 0
 
@@ -626,9 +665,9 @@ class Player(models.Model):
             season=[get_current_year()],
             teams=[]):  # [v['id'] for k, v in settings.PC_TEAMS.iteritems()]):
         return FieldPerformance.objects.filter(
-            Q(match__fk_home_team__id__in=teams) | Q(match__fk_away_team__id__in=teams),
+            Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__fk_match_date__year__in=season,
+            match__date__year__in=season,
             wicket_keeper=False
         ).aggregate(total=Sum(F('field_catches') + F('field_run_outs')))['total'] or 0
 
@@ -645,6 +684,9 @@ class Performance(models.Model):
     # Standard Fields
     captain = models.BooleanField(default=False)
     wicket_keeper = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.player) + ': ' + str(self.match)
 
 
 class BatPerformance(models.Model):
@@ -674,6 +716,9 @@ class BatPerformance(models.Model):
         null=True
     )
     bat_inning_no = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.player) + ': ' + str(self.match)
 
     # Methods
     def how_out_descriptive(self):
@@ -706,6 +751,9 @@ class BowlPerformance(models.Model):
     bowl_wickets_total = models.IntegerField(default=0)
     bowl_inning_no = models.IntegerField(default=0)
 
+    def __str__(self):
+        return str(self.player) + ': ' + str(self.match)
+
     # Methods
     def overs_conversion(self, overs):
         ''' Converts overs in the form 6.3 (6 overs 3 balls) to 6.5 (6 1/2 overs)'''
@@ -728,66 +776,72 @@ class FieldPerformance(models.Model):
     field_run_outs = models.IntegerField(default=0)
     field_stumped = models.IntegerField(default=0)
 
-
-class MVPPerformance(models.Model):
-    # Foreign Keys
-    match = models.ForeignKey('Match', on_delete=models.CASCADE)
-    player = models.ForeignKey('Player', on_delete=models.CASCADE)
-
-    # MVP Performance Fields
-    mvp = models.BooleanField(default=False)
-    mvp_total = models.FloatField(default=0.0)
-    mvp_bat_runs = models.FloatField(default=0.0)
-    mvp_bat_parscorebonus = models.FloatField(default=0.0)
-    mvp_bowl_assisted = models.FloatField(default=0.0)
-    mvp_bowl_unassisted = models.FloatField(default=0.0)
-    mvp_bowl_economybonus = models.FloatField(default=0.0)
-    mvp_field_assisted = models.FloatField(default=0.0)
-    mvp_field_unassisted = models.FloatField(default=0.0)
-
-    # MVP Methods
-    def generate_mvp_scores(self):
-        ''' Generate mvp score for performances '''
-        if self.bat:
-            self.mvp_bat_runs = self.bat_runs / 10.0
-            parscorebonus = (self.bat_runs - self.bat_par_score) / 10.0
-            if parscorebonus < 0 and self.bat_how_out == 'no':
-                parscorebonus = 0
-            self.mvp_bat_parscorebonus = parscorebonus
-        if self.bowl:
-            self.mvp_bowl_assisted = (self.bowl_wickets_caught + self.bowl_wickets_stumped) * 1.25
-            self.mvp_bowl_unassisted = (
-                self.bowl_wickets_lbw + self.bowl_wickets_bowled + self.bowl_wickets_hit_wicket
-            ) * 2.5
-            self.mvp_bowl_economybonus = -((
-                self.bowl_runs / self.overs_conversion(
-                    self.bowl_overs if self.bowl_overs != 0 else 1
-                )
-            ) - self.bowl_pareconomy) / 10.0
-        self.mvp_field_assisted = (self.field_catches + self.field_stumped) * 1.25
-        self.mvp_field_unassisted = (self.field_run_outs) * 2.5
-        self.mvp = True
-        self.mvp_total = int((
-            (
-                self.mvp_bat_runs + self.mvp_bat_parscorebonus + self.mvp_bowl_assisted
-            ) + (
-                self.mvp_bowl_unassisted + self.mvp_bowl_economybonus + self.mvp_field_assisted
-            ) + self.mvp_field_unassisted
-        ) * 10)
-        self.save()
-
-
-class PlayCricketTeam(models.Model):
-    team_id = models.CharField(max_length=8, blank=False)
-    team_name = models.CharField(max_length=64, blank=False)
-    first_season = models.CharField(max_length=4, blank=False)
-    fantasy_league = models.BooleanField(default=False, blank=False)
-    active = models.BooleanField(default=True, blank=False)
-    match_results = models.BooleanField(default=False, blank=True)
-
-    def deactivate(self):
-        self.active = False
-        self.save()
-
     def __str__(self):
-        return self.team_name
+        return str(self.player) + ': ' + str(self.match)
+
+
+# class MVPPerformance(models.Model):
+#     # Foreign Keys
+#     match = models.ForeignKey('Match', on_delete=models.CASCADE)
+#     player = models.ForeignKey('Player', on_delete=models.CASCADE)
+
+#     # MVP Performance Fields
+#     mvp = models.BooleanField(default=False)
+#     mvp_total = models.FloatField(default=0.0)
+#     mvp_bat_runs = models.FloatField(default=0.0)
+#     mvp_bat_parscorebonus = models.FloatField(default=0.0)
+#     mvp_bowl_assisted = models.FloatField(default=0.0)
+#     mvp_bowl_unassisted = models.FloatField(default=0.0)
+#     mvp_bowl_economybonus = models.FloatField(default=0.0)
+#     mvp_field_assisted = models.FloatField(default=0.0)
+#     mvp_field_unassisted = models.FloatField(default=0.0)
+
+#     def __str__(self):
+#         return str(self.player) + ': ' + str(self.match)
+
+#     # MVP Methods
+#     def generate_mvp_scores(self):
+#         ''' Generate mvp score for performances '''
+#         if self.bat:
+#             self.mvp_bat_runs = self.bat_runs / 10.0
+#             parscorebonus = (self.bat_runs - self.bat_par_score) / 10.0
+#             if parscorebonus < 0 and self.bat_how_out == 'no':
+#                 parscorebonus = 0
+#             self.mvp_bat_parscorebonus = parscorebonus
+#         if self.bowl:
+#             self.mvp_bowl_assisted = (self.bowl_wickets_caught + self.bowl_wickets_stumped) * 1.25
+#             self.mvp_bowl_unassisted = (
+#                 self.bowl_wickets_lbw + self.bowl_wickets_bowled + self.bowl_wickets_hit_wicket
+#             ) * 2.5
+#             self.mvp_bowl_economybonus = -((
+#                 self.bowl_runs / self.overs_conversion(
+#                     self.bowl_overs if self.bowl_overs != 0 else 1
+#                 )
+#             ) - self.bowl_pareconomy) / 10.0
+#         self.mvp_field_assisted = (self.field_catches + self.field_stumped) * 1.25
+#         self.mvp_field_unassisted = (self.field_run_outs) * 2.5
+#         self.mvp = True
+#         self.mvp_total = int((
+#             (
+#                 self.mvp_bat_runs + self.mvp_bat_parscorebonus + self.mvp_bowl_assisted
+#             ) + (
+#                 self.mvp_bowl_unassisted + self.mvp_bowl_economybonus + self.mvp_field_assisted
+#             ) + self.mvp_field_unassisted
+#         ) * 10)
+#         self.save()
+
+
+# class PlayCricketTeam(models.Model):
+#     team_id = models.CharField(max_length=8, blank=False)
+#     team_name = models.CharField(max_length=64, blank=False)
+#     first_season = models.CharField(max_length=4, blank=False)
+#     fantasy_league = models.BooleanField(default=False, blank=False)
+#     active = models.BooleanField(default=True, blank=False)
+#     match_results = models.BooleanField(default=False, blank=True)
+
+#     def deactivate(self):
+#         self.active = False
+#         self.save()
+
+#     def __str__(self):
+#         return self.team_name

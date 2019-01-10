@@ -23,7 +23,7 @@ class View(BaseView):
         self.add_context(
             'matches',
             self.get_results(
-                fk_date__date__range=[
+                date__date__range=[
                     self.get_start_of_month(),
                     self.get_date()
                 ]
@@ -57,6 +57,6 @@ class View(BaseView):
         )
         return render(
             request,
-            'playcricket/matches/results.html',
+            'cricket/matches/results.html',
             context=self.get_context()
         )

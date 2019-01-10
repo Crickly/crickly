@@ -1,4 +1,4 @@
-{% extends "playcricket/matches/match-template.html" %}
+{% extends "cricket/matches/match-template.html" %}
 
 
 {% block match_detail %}
@@ -9,12 +9,12 @@
         <div class="title">
           <h3>Inning 1</h3>
           <div class="caption">
-            {% if inning_1.bat_team_id == match.fk_home_team.pc_id %}{% comment %} Check which way to display batting/bowling team {% endcomment %}
-              <p>Batting: {{ match.fk_home_team.club.name }}</p>
-              <p>Bowling: {{ match.fk_away_team.club.name }}</p>
+            {% if inning_1.bat_team_id == match.home_team.pc_id %}{% comment %} Check which way to display batting/bowling team {% endcomment %}
+              <p>Batting: {{ match.home_team.club.name }}</p>
+              <p>Bowling: {{ match.away_team.club.name }}</p>
             {% else %}
-              <p>Batting: {{ match.fk_away_team.club.name }}</p>
-              <p>Bowling: {{ match.fk_home_team.club.name }}</p>
+              <p>Batting: {{ match.away_team.club.name }}</p>
+              <p>Bowling: {{ match.home_team.club.name }}</p>
             {% endif %}
           </div>
         </div>
@@ -105,12 +105,12 @@
         <div class="title">
           <h3>Inning 2</h3>
           <div class="caption">
-            {% if inning_2.bat_team_id == match.fk_home_team.pc_id %} {% comment %} Check which way bowling/batting team should be {% endcomment %}
-              <p>Batting: {{ match.fk_home_team.club.name }}</p>
-              <p>Bowling: {{ match.fk_away_team.club.name }}</p>
+            {% if inning_2.bat_team_id == match.home_team.pc_id %} {% comment %} Check which way bowling/batting team should be {% endcomment %}
+              <p>Batting: {{ match.home_team.club.name }}</p>
+              <p>Bowling: {{ match.away_team.club.name }}</p>
             {% else %}
-              <p>Batting: {{ match.fk_away_team.club.name }}</p>
-              <p>Bowling: {{ match.fk_home_team.club.name }}</p>
+              <p>Batting: {{ match.away_team.club.name }}</p>
+              <p>Bowling: {{ match.home_team.club.name }}</p>
             {% endif %}
           </div>
         </div>

@@ -11,7 +11,7 @@ from django.db.models import Min
 
 
 # Project imports
-from cricket.models import PlayCricketTeam, Match
+from cricket.models import Match
 
 
 class View(V):
@@ -22,14 +22,15 @@ class View(V):
     context = {}
 
     def get_seasons(self):
-        start_year = int(
-            PlayCricketTeam.objects.filter(
-                match_results=True,
-                active=True,
-            ).aggregate(
-                Min('first_season')
-            )['first_season__min']
-        )
+        # start_year = int(
+        #     PlayCricketTeam.objects.filter(
+        #         match_results=True,
+        #         active=True,
+        #     ).aggregate(
+        #         Min('first_season')
+        #     )['first_season__min']
+        # )
+        start_year = 2018
         return range(date.today().year, start_year - 1, -1)
 
     def get_date(self):
@@ -39,16 +40,16 @@ class View(V):
         return Match.objects.filter(
             **kwargs
         ).order_by(
-            '-fk_date__date'
+            '-date__date'
         )
 
     def get_fixtures(self):
         today = self.get_date()
         one_week = today + timedelta(days=7)
         return Match.objects.filter(
-            fk_date__date__range=[today, one_week]
+            date__date__range=[today, one_week]
         ).order_by(
-            'fk_date__date'
+            'date__date'
         )
 
     # Context managers

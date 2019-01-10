@@ -21,7 +21,7 @@ class View(BaseStatsView):
     abstract = False
     order_by_options = [
         'name', 'overs', 'maidens', 'runs', 'average',
-        'wickets', 'economy', 'fantasy',
+        'wickets', 'economy',
     ]
 
     order_by_functions = {
@@ -38,11 +38,6 @@ class View(BaseStatsView):
         ),
         'wickets': lambda a, b, c: sorted(a, key=lambda d: d.get_wickets(b, c), reverse=True),
         'economy': lambda a, b, c: sorted(a, key=lambda d: d.get_economy(b, c)),
-        'fantasy': lambda a, b, c: sorted(
-            a,
-            key=lambda d: d.bowl_mvp_points(b, c),
-            reverse=True
-        ),
     }
 
     def filter_function(self, player, years, teams):
@@ -58,5 +53,4 @@ class View(BaseStatsView):
             'average': floatformat(player.get_bowl_average(years, teams)),
             'economy': floatformat(player.get_economy(years, teams)),
             'wickets_5': player.get_5_wickets(years, teams),
-            'fantasy_points': floatformat(player.bowl_mvp_points(years, teams)),
         }

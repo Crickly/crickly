@@ -21,7 +21,7 @@ class View(BaseStatsView):
     abstract = False
     order_by_options = [
         'name', 'games', 'innings', 'runs', 'par_runs',
-        'average', 'no', 'highscore', 'fantasy',
+        'average', 'no', 'highscore',
     ]
 
     order_by_functions = {
@@ -44,11 +44,6 @@ class View(BaseStatsView):
             key=lambda d: d.get_high_score(b, c),
             reverse=True
         ),
-        'fantasy': lambda a, b, c: sorted(
-            a,
-            key=lambda d: d.bat_mvp_points(b, c),
-            reverse=True
-        ),
     }
 
     def filter_function(self, player, years, teams):
@@ -66,5 +61,4 @@ class View(BaseStatsView):
             'average': floatformat(player.get_average(year, team)),
             'runs_50s': player.get_50s(year, team),
             'runs_100s': player.get_100s(year, team),
-            'fantasy_points': floatformat(player.bat_mvp_points(year, team)),
         }

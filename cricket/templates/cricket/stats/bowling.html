@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% comment %} Set <titlew> {% endcomment %}
+{% comment %} Set <title> {% endcomment %}
 {% block title %}
-  Batting Stats
+  Bowling Stats
 {% endblock %}
 
 {% block content %}
   <div class="outter-wrapper body-wrapper">
     <div class="wrapper ad-pad clearfix">
       <div class="main-content col-1-1 right last">
-        <h1>Batting Stats</h1>
+        <h1>Bowling Stats</h1>
         <div class="search-bar">
-          <div class="options"> {% comment %} filter options {% endcomment %}
+          <div class="options">{% comment %} Filter options {% endcomment %}
             <select name="year" id="yearSelect">
               <option value="all">All</option>
               {% for season in seasons %}
@@ -21,19 +21,17 @@
             <select name="team" id="teamSelect">
               <option value="all" selected>All</option>
               {% for team in teams %}
-                <option value="{{ team.team_id }}">{{ team.team_name }}</option>
+                <option value="{{ team.id }}">{{ team.name }}</option>
               {% endfor %}
             </select>
             <select name="order-by" id="orderbySelect">
               <option value="name">Name</option>
-              <option value="games">Games</option>
-              <option value="innings">Innings</option>
-              <option value="runs" selected>Runs</option>
-              <option value="par_runs">Par Runs</option>
+              <option value="overs">Overs</option>
+              <option value="maidens">Maidens</option>
+              <option value="runs">Runs</option>
+              <option value="wickets" selected>Wickets</option>
               <option value="average">Average</option>
-              <option value="no">Not Outs</option>
-              <option value="highscore">High Score</option>
-              <option value="fantasy">Fantasy Points</option>
+              <option value="economy">Economy</option>
             </select>
             <select name="display-count" id="displaycountSelect">
               <option value="20">20</option>
@@ -42,7 +40,7 @@
             </select>
           </div>
           <div class="search-button">
-            <input type="submit" value="Search" onclick="battingStatsSearch()"/>
+            <input type="submit" value="Search" onclick="bowlingStatsSearch()"/>
           </div>
         </div>
         <div class="stats-list">
@@ -50,36 +48,30 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Games</th>
-                <th>Innings</th>
-                <th>Not Outs</th>
+                <th>Overs</th>
+                <th>Maidens</th>
                 <th>Runs</th>
-                <th>Par Runs</th>
-                <th>High Score</th>
+                <th>Wickets</th>
                 <th>Average</th>
-                <th>50s</th>
-                <th>100s</th>
-                <th>Fantasy Points</th>
+                <th>Economy</th>
+                <th>5 Wicket Hauls</th>
               </tr>
             </thead>
             <tbody>
-              {% for player in players %}{% comment %} Add players to table {% endcomment %}
+              {% for player in players %}{% comment %} Add bowlers to table {% endcomment %}
                 <tr>
                   <td>{{ player.player_name }}</td>
-                  <td>{{ player.get_games }}</td>
-                  <td>{{ player.get_innings }}</td>
-                  <td>{{ player.get_not_outs }}</td>
-                  <td>{{ player.get_runs }}</td>
-                  <td>{{ player.get_par_runs }}</td>
-                  <td>{{ player.get_high_score }}</td>
-                  {% if player.get_average != "-" %}{% comment %} Check is not - so dont do float format on string {% endcomment %}
-                    <td>{{ player.get_average|floatformat }}</td>
+                  <td>{{ player.get_overs|floatformat }}</td>
+                  <td>{{ player.get_maidens }}</td>
+                  <td>{{ player.get_bowl_runs }}</td>
+                  <td>{{ player.get_wickets }}</td>
+                  {% if player.get_bowl_average != "-" %} {% comment %} check if - so dont for floatformat on string {% endcomment %}
+                    <td>{{ player.get_bowl_average|floatformat }}</td>
                   {% else %}
                     <td>-</td>
                   {% endif %}
-                  <td>{{ player.get_50s }}</td>
-                  <td>{{ player.get_100s }}</td>
-                  <td>{{ player.bat_mvp_points|floatformat }}</td>
+                  <td>{{ player.get_economy|floatformat }}</td>
+                  <td>{{ player.get_5_wickets }}</td>
                 </tr>
               {% endfor %}
             </tbody>

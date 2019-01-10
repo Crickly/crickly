@@ -2,7 +2,7 @@
 
 {% comment %} Set <title> {% endcomment %}
 {% block title %}
-  {{ match.fk_home_team.club.name }} {{ match.fk_home_team.name }} Vs {{ match.fk_away_team.club.name }} {{ match.fk_away_team.name }}
+  {{ match.home_team.club.name }} {{ match.home_team.name }} Vs {{ match.away_team.club.name }} {{ match.away_team.name }}
 {% endblock %}
 
 {% block content %}
@@ -18,12 +18,12 @@
           </div>
           <div class="info">
             <div>{% comment %} Add base match data {% endcomment %}
-              <p><strong>Date</strong> {{ match.fk_date.get_date|date:"jS F Y" }}</p>
-              {% if match.fk_ground.name != '' and match.fk_ground.id != 1 %}
-                <p><strong>Ground</strong> {{ match.fk_ground.name }}</p>
+              <p><strong>Date</strong> {{ match.date.get_date|date:"jS F Y" }}</p>
+              {% if match.ground.name != '' and match.ground.id != 1 %}
+                <p><strong>Ground</strong> {{ match.ground.name }}</p>
               {% endif %}
-              <p><strong>Home</strong> {{ match.fk_home_team.club.name }} {{ match.fk_home_team.name }}</p>
-              <p><strong>Away</strong> {{ match.fk_away_team.club.name }} {{ match.fk_away_team.name }}</p>
+              <p><strong>Home</strong> {{ match.home_team.club.name }} {{ match.home_team.name }}</p>
+              <p><strong>Away</strong> {{ match.away_team.club.name }} {{ match.away_team.name }}</p>
               <p><strong>Result</strong> {{ match.result_description }}</p>
             </div>
           </div>

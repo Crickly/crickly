@@ -34,6 +34,12 @@ class View(ArgumentView):
         innings = Inning.objects.filter(match__id=match.id)
         inning_1 = None
         inning_2 = None
+        if innings.count() != 2:
+            raise notEnoughInningsError(
+                'Only {} Innings!'.format(
+                    innings.count()
+                )
+            )
         for inning in innings:
             if inning.get_inning_no() == 1:
                 inning_1 = inning
@@ -100,7 +106,7 @@ class View(ArgumentView):
                 )
             )
 
-        if not match.is_live_score() and match.fk_team.fantasy_league:
+        if not match.is_live_score() and match.team.fantasy_league:
             self.add_context(
                 'kvcc_players',
                 match_performances.filter(
@@ -118,18 +124,18 @@ class View(ArgumentView):
             self.get_performances()
             return render(
                 request,
-                'playcricket/matches/match.html',
+                'cricket/matches/match.html',
                 context=self.get_context()
             )
         except kwargError:
             return render(
                 request,
-                'playcricket/matches/notplayed.html',
+                'cricket/matches/notplayed.html',
                 context=self.get_context()
             )
         except notEnoughInningsError:
             return render(
                 request,
-                'playcricket/matches/basic.html',
+                'cricket/matches/basic.html',
                 context=self.get_context()
             )

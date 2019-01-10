@@ -26,7 +26,7 @@
         <div class="info">
           <div>
             {% for match in recent_matches %}{% comment %} Added 5 most recent matches to page {% endcomment %}
-              <p><strong>{{ match.fk_date.get_date|date:"d.m" }}</strong> <a href="/matches/{{ match.id }}/">{{ match.match_description }}</a></p>
+              <p><strong>{{ match.date.get_date|date:"d.m" }}</strong> <a href="/matches/{{ match.id }}/">{{ match.match_description }}</a></p>
             {% endfor %}
           </div>
         </div>
@@ -45,7 +45,7 @@
           <div>
             {% if upcoming_matches %}
               {% for match in upcoming_matches %}{% comment %} Add matches in the next week to the page {% endcomment %}
-                <p><strong>{{ match.fk_date.get_date|date:"d.m" }}</strong> <a href="/matches/{{ match.id }}/">{{ match.match_description }}</a></p>
+                <p><strong>{{ match.date.get_date|date:"d.m" }}</strong> <a href="/matches/{{ match.id }}/">{{ match.match_description }}</a></p>
               {% endfor %}
             {% else %}
               <p>We dont have any games coming up</p>

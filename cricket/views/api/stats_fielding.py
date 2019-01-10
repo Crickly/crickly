@@ -23,7 +23,6 @@ class View(BaseStatsView):
         'name', 'games',
         'wk_catches', 'wk_stumpings', 'wk_total',
         'fld_catches', 'fld_run_outs', 'fld_total',
-        'fantasy',
     ]
 
     order_by_functions = {
@@ -62,11 +61,6 @@ class View(BaseStatsView):
             key=lambda d: d.get_fielding_wickets(b, c),
             reverse=True,
         ),
-        'fantasy': lambda a, b, c: sorted(
-            a,
-            key=lambda d: d.field_mvp_points(b, c),
-            reverse=True
-        ),
     }
 
     def filter_function(self, player, years, teams):
@@ -82,5 +76,4 @@ class View(BaseStatsView):
             'fld_catches': player.get_fielding_catches(year, team),
             'fld_run_outs': player.get_run_outs(year, team),
             'fld_total': player.get_fielding_wickets(year, team),
-            'fantasy_points': floatformat(player.field_mvp_points(year, team)),
         }

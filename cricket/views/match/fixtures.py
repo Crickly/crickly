@@ -22,6 +22,6 @@ class View(BaseView):
         )
         return render(
             request,
-            'playcricket/matches/fixtures.html',
+            'cricket/matches/fixtures.html',
             context=self.get_context()
         )

@@ -44,16 +44,16 @@ class View(BaseView):
 
             # Get matches in date range
             matches = Match.objects.filter(
-                fk_date__date__range=[current_date, end_date]
-            ).order_by('fk_date__date')
+                date__date__range=[current_date, end_date]
+            ).order_by('date__date')
 
             # Get important info
             important_info = [{
-                'match_date': i.fk_date.date.strftime('%d.%m'),
-                'home_club_name': i.fk_home_team.club.name,
-                'home_team_name': i.fk_home_team.name,
-                'away_club_name': i.fk_away_team.club.name,
-                'away_team_name': i.fk_away_team.name,
+                'match_date': i.date.date.strftime('%d.%m'),
+                'home_club_name': i.home_team.club.name,
+                'home_team_name': i.home_team.name,
+                'away_club_name': i.away_team.club.name,
+                'away_team_name': i.away_team.name,
                 'id': i.id,
             } for i in matches]
 

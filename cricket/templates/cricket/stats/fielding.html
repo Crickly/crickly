@@ -21,7 +21,7 @@
             <select name="team" id="teamSelect">
               <option value="all" selected>All</option>
               {% for team in teams %}
-                <option value="{{ team.team_id }}">{{ team.team_name }}</option>
+                <option value="{{ team.id }}">{{ team.name }}</option>
               {% endfor %}
             </select>
             <select name="order-by" id="orderbySelect">
@@ -33,7 +33,6 @@
               <option value="fld_catches">Fielding Catches</option>
               <option value="fld_run_outs">Run Outs</option>
               <option value="fld_total" selected>Total Fielding Wickets</option>
-              <option value="fantasy">Fantasy Points</option>
             </select>
             <select name="display-count" id="displaycountSelect">
               <option value="20">20</option>
@@ -57,7 +56,6 @@
                 <th>Fielding Catches</th>
                 <th>Run Outs</th>
                 <th>Total Fielding Wickets</th>
-                <th>Fantasy Points</th>
               </tr>
             </thead>
             <tbody>
@@ -71,7 +69,6 @@
                   <td>{{ player.get_fielding_catches }}</td>
                   <td>{{ player.get_run_outs }}</td>
                   <td>{{ player.get_fielding_wickets }}</td>
-                  <td>{{ player.field_mvp_points|floatformat }}</td>
                 </tr>
               {% endfor %}
             </tbody>

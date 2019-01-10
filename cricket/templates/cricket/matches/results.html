@@ -2,25 +2,30 @@
 
 {% comment %} Set <title> {% endcomment %}
 {% block title %}
-  Fixtures
+  Results
 {% endblock %}
 
 {% block content %}
   <div class="outter-wrapper body-wrapper">
     <div class="wrapper ad-pad clearfix">
       <div class="main-content col-1-1 right last">
-        <h1>Fixtures</h1>
+        <h1>Results</h1>
         <div class="search-bar">
-          <div class="options">
-            <select name="period" id="periodSelect">
-              <option value="wk">1 Week</option>
-              <option value="mth">1 Month</option>
-              <option value="sn">Season</option>
+          <div class="options"> {% comment %} Filter Options {% endcomment %}
+            <select name="year" id="yearSelect">
+              {% for year in seasons %}
+                <option value="{{ year }}" {% if forloop.first %}selected {% endif %}>{{ year }}</option>
+              {% endfor %}
+            </select>
+            <select name="month" id="monthSelect">
+              {% for month in months %}
+                <option value="{{ month.value }}" {% if month.value == current_month %} selected {% endif %}>{{ month.name }}</option>
+              {% endfor %}
             </select>
           </div>
           <div class="search-button">
-            <input type="submit" value="Search" onclick="fixtureSearch()"/>
-          </diV>
+            <input type="submit" value="Search" onclick="resultsSearch()"/>
+          </div>
         </div>
         <div class="match-list">
           <table id="match-table">
@@ -29,17 +34,18 @@
                 <th>Date</th>
                 <th>Home</th>
                 <th>Away</th>
+                <th>Result</th>
               </tr>
             </thead>
             <tbody>
-              {% if matches %}{% comment %} Check if there are matches to add to table {% endcomment %}
+              {% if matches %}
                 {% for match in matches %}{% comment %} Add matches to table {% endcomment %}
                   <tr>
-                    <td>{{ match.fk_date.get_date|date:"d.m" }}</td>{% comment %} Format Date nicely {% endcomment %}
-                    <td>{{ match.fk_home_team.club.name }}<br>{{ match.fk_home_team.name }}</td>
-                    <td>{{ match.fk_away_team.club.name }}<br>{{ match.fk_away_team.name }}</td>
+                    <td>{{ match.date.get_date|date:"d.m" }}</td>{% comment %} Format date into date time {% endcomment %}
+                    <td>{{ match.home_team.club.name }}<br>{{ match.home_team.name }}</td>
+                    <td>{{ match.away_team.club.name }}<br>{{ match.away_team.name }}</td>
+                    <td>{{ match.result_description }}</td>
                     <td><a href="/matches/{{ match.id }}/">Link</a></td>
-                  </tr>
                 {% endfor %}
               {% endif %}
             </tbody>

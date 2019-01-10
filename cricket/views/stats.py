@@ -8,31 +8,29 @@ from django.shortcuts import render
 from datetime import date
 
 # Project imports
-from cricket.models import Player, PlayCricketTeam
+from cricket.models import Player, Team
 
 
 def get_seasons():
-    start_year = int(min(
-        PlayCricketTeam.objects.filter(
-            match_results=True,
-            active=True,
-        ),
-        key=lambda a: a.first_season
-    ).first_season)
+    # start_year = int(min(
+    #     PlayCricketTeam.objects.filter(
+    #         match_results=True,
+    #         active=True,
+    #     ),
+    #     key=lambda a: a.first_season
+    # ).first_season)
+    start_year = 2018
     return range(date.today().year, start_year - 1, -1)
 
 
 def get_teams():
-    teams = PlayCricketTeam.objects.filter(
-        match_results=True,
-        active=True,
-    )
-    return teams.order_by('team_name')
+    return Team.objects.filter(club__home_club=True).order_by('name')
+
 
 # Stats index view
 def index(request):
     # Get club players
-    players = Player.objects.filter(kvcc_player=True).all()
+    players = Player.objects.filter(club__home_club=True).all()
 
     # Sort players and remove any that have none value
     top_wicket_takers = sorted(players, key=lambda a: a.get_wickets())[:-6:-1]
@@ -43,7 +41,7 @@ def index(request):
     top_catch_takers = filter(lambda a: a.get_catches() is not None, top_catch_takers)
     return render(
         request,
-        'playcricket/stats/index.html',
+        'cricket/stats/index.html',
         context={
             'current_season': date.today().year,
             'top_wicket_takers': top_wicket_takers,
@@ -56,7 +54,7 @@ def index(request):
 # Stats batting view
 def batting(request):
     # Get club players
-    players = Player.objects.filter(kvcc_player=True)
+    players = Player.objects.filter(club__home_club=True)
     # Sort players by runs
     players = reversed(sorted(players, key=lambda a: a.get_runs()))
 
@@ -67,7 +65,7 @@ def batting(request):
             final_players.append(i)
     return render(
         request,
-        'playcricket/stats/batting.html',
+        'cricket/stats/batting.html',
         context={
             'players': final_players[:20],
             'seasons': get_seasons(),
@@ -79,7 +77,7 @@ def batting(request):
 # Stats bolwing view
 def bowling(request):
     # Get club players
-    players = Player.objects.filter(kvcc_player=True)
+    players = Player.objects.filter(club__home_club=True)
     # Sort players by wickets taken
     players = reversed(sorted(players, key=lambda a: a.get_wickets()))
 
@@ -90,7 +88,7 @@ def bowling(request):
             final_players.append(i)
     return render(
         request,
-        'playcricket/stats/bowling.html',
+        'cricket/stats/bowling.html',
         context={
             'players': final_players[:20],
             'teams': get_teams(),
@@ -102,7 +100,7 @@ def bowling(request):
 # Stats fielding view
 def fielding(request):
     # Get club players
-    players = Player.objects.filter(kvcc_player=True)
+    players = Player.objects.filter(club__home_club=True)
     # Sort players by fielding wickets
     players = reversed(sorted(players, key=lambda a: a.get_fielding_wickets()))
     # Remove players who havent played a game
@@ -112,7 +110,7 @@ def fielding(request):
             final_players.append(i)
     return render(
         request,
-        'playcricket/stats/fielding.html',
+        'cricket/stats/fielding.html',
         context={
             'players': final_players[:20],
             'teams': get_teams(),
