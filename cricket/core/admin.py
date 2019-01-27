@@ -4,7 +4,7 @@ from django.contrib import admin
 from cricket.core.models import (Match, Inning, Umpire, UmpireAssignment, Competition,
                             Ground, Club, Team, Player, Performance, BatPerformance,
                             BowlPerformance, FieldPerformance, MatchDate,
-                            Scorer, ScorerAssignment)
+                            Scorer, ScorerAssignment, League)
 
 
 admin.site.register(Match)
@@ -14,6 +14,7 @@ admin.site.register(UmpireAssignment)
 admin.site.register(Scorer)
 admin.site.register(ScorerAssignment)
 admin.site.register(Competition)
+admin.site.register(League)
 admin.site.register(Ground)
 admin.site.register(Club)
 admin.site.register(Team)

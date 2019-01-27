@@ -11,7 +11,7 @@ from django.db.models import Min
 
 
 # Project imports
-from cricket.core.models import Match
+from cricket.core.models import Match, MatchDate
 
 
 class View(V):
@@ -22,15 +22,7 @@ class View(V):
     context = {}
 
     def get_seasons(self):
-        # start_year = int(
-        #     PlayCricketTeam.objects.filter(
-        #         match_results=True,
-        #         active=True,
-        #     ).aggregate(
-        #         Min('first_season')
-        #     )['first_season__min']
-        # )
-        start_year = 2018
+        start_year = MatchDate.objects.all().aggregate(Min('year'))['year__min']
         return range(date.today().year, start_year - 1, -1)
 
     def get_date(self):
