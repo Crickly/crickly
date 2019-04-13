@@ -15,7 +15,7 @@ Quick start 🛫
 ```py
     INSTALLED_APPS = [
         ...
-        'cricket',
+        'cricket.core',
     ]
 ```
 
