@@ -11,7 +11,7 @@ from django.shortcuts import render, get_object_or_404
 # Project imports
 from cricket.core.views.generic import ArgumentView
 from cricket.core.views.exceptions import kwargError, notEnoughInningsError
-from cricket.core.models import Match, Inning, Performance
+from cricket.core.models import Match, Inning, BatPerformance, BowlPerformance
 
 
 class View(ArgumentView):
@@ -41,11 +41,10 @@ class View(ArgumentView):
                 )
             )
         for inning in innings:
-            if inning.get_inning_no() == 1:
+            if inning.inning_no == 1:
                 inning_1 = inning
             else:
                 inning_2 = inning
-
         self.add_context(
             'inning_1',
             inning_1
@@ -57,18 +56,21 @@ class View(ArgumentView):
 
     def get_performances(self):
         match = self.get_context_value('match')
-        match_performances = Performance.objects.filter(match__id=match.id)
+        # player_performances = Performance.objects.filter(match__id=match.id)
+        bat_performances = BatPerformance.objects.filter(match__id=match.id)
+        bowl_performances = BowlPerformance.objects.filter(match__id=match.id)
+
         inning_1 = False
         inning_2 = False
         for inning in Inning.objects.filter(match_id=match.id):
-            if inning.get_inning_no() == 1:
+            if inning.inning_no == 1:
                 inning_1 = True
             else:
                 inning_2 = True
         if inning_1:
             self.add_context(
                 'inning_1_bat',
-                match_performances.filter(
+                bat_performances.filter(
                     bat=True,
                     bat_inning_no=1,
                 ).order_by(
@@ -78,7 +80,7 @@ class View(ArgumentView):
 
             self.add_context(
                 'inning_1_bowl',
-                match_performances.filter(
+                bowl_performances.filter(
                     bowl=True,
                     bowl_inning_no=1,
                 ).order_by(
@@ -88,7 +90,7 @@ class View(ArgumentView):
         if inning_2:
             self.add_context(
                 'inning_2_bat',
-                match_performances.filter(
+                bat_performances.filter(
                     bat=True,
                     bat_inning_no=2,
                 ).order_by(
@@ -98,7 +100,7 @@ class View(ArgumentView):
 
             self.add_context(
                 'inning_2_bowl',
-                match_performances.filter(
+                bowl_performances.filter(
                     bowl=True,
                     bowl_inning_no=2,
                 ).order_by(
@@ -106,15 +108,15 @@ class View(ArgumentView):
                 )
             )
 
-        if not match.is_live_score() and match.team.fantasy_league:
-            self.add_context(
-                'kvcc_players',
-                match_performances.filter(
-                    player__kvcc_player=True,
-                ).order_by(
-                    'player__player_name'
-                )
-            )
+        # if not match.is_live_score() and match.team.fantasy_league:
+        #     self.add_context(
+        #         'kvcc_players',
+        #         match_performances.filter(
+        #             player__kvcc_player=True,
+        #         ).order_by(
+        #             'player__player_name'
+        #         )
+        #     )
 
     def get(self, request, **kwargs):
         self.clear_context()

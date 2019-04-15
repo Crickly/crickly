@@ -3,23 +3,17 @@ from __future__ import unicode_literals
 
 # Django imports
 from django.shortcuts import render
+from django.db.models import Min
 
 # Python imports
 from datetime import date
 
 # Project imports
-from cricket.core.models import Player, Team
+from cricket.core.models import Player, Team, MatchDate
 
 
 def get_seasons():
-    # start_year = int(min(
-    #     PlayCricketTeam.objects.filter(
-    #         match_results=True,
-    #         active=True,
-    #     ),
-    #     key=lambda a: a.first_season
-    # ).first_season)
-    start_year = 2018
+    start_year = MatchDate.objects.all().aggregate(Min('year'))['year__min']
     return range(date.today().year, start_year - 1, -1)
 
 

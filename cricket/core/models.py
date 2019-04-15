@@ -189,8 +189,9 @@ class Inning(models.Model):
     match = models.ForeignKey('Match', on_delete=models.CASCADE)
 
     # Fields
-    bat_team_id = models.CharField(max_length=8)
-    bowl_team_id = models.CharField(max_length=8)
+    bat_team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='bat_team')
+    bowl_team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='bowl_team')
+
     runs = models.IntegerField()
     wickets = models.IntegerField()
     overs = models.FloatField()
@@ -549,7 +550,7 @@ class Player(models.Model):
         return BatPerformance.objects.filter(
             Q(match__home_team__id__in=teams) | Q(match__away_team__id__in=teams),
             player__id=self.id,
-            match__date__season__in=season,
+            match__date__year__in=season,
             bat=True,
             bat_how_out='no',
         ).count()
