@@ -15,16 +15,16 @@ Quick start 🛫
 ```py
     INSTALLED_APPS = [
         ...
-        'cricket',
+        'cricket.core',
     ]
 ```
 
-2. Include the polls URLconf in your project urls.py like this
+2. Include the URLconf in your project urls.py like this
 
 ```py
-    path('matches/', include('cricket.urls.matches')),
-    path('stats/', include('cricket.urls.stats')),
-    path('api/', include('cricket.urls.api')),
+    path(r'^matches/', include('cricket.core.urls.matches')),
+    path(r'^stats/', include('cricket.core.urls.stats')),
+    path(r'^api/', include('cricket.core.urls.api')),
 ```
 
 3. Run `python manage.py migrate` to create the cricket models.
