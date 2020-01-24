@@ -1,4 +1,4 @@
-Django-Cricket 🏏
+🏏 Crickly 
 ================
 
 Django-Cricket is a simple app to store cricket match details.
@@ -7,7 +7,7 @@ Django-Cricket is a simple app to store cricket match details.
 
 Detailed documentation is in the `docs` directory. (Not produced yet. So instead heres a unicorn... 🦄)
 
-Quick start 🛫
+🛫 Quick start
 -------------
 
 1. Add `cricket` to your INSTALLED_APPS setting like this
@@ -45,12 +45,12 @@ Quick start 🛫
    Visit http://127.0.0.1:8000/stats/ to view statistics.
    
    
-Extensions🔧
+🔧 Extensions
 ------------
 
 There are several extensions to make this app more usable, they are:
 
-- [Django-Cricket-PlayCricket-Link](https://github.com/RileyEv/django-cricket-playcricket-link): This extension links the base storage app to the ECB Play Cricket system. It is helpful for clubs who play in leagues that require the results to be added to playcricket.
-- [Django-Cricket-FantasyLeague](https://github.com/RileyEv/django-cricket-matchreports): ⚙️ Under Development. This adds a fantasy league section to the website. A good fundraiser for cricket clubs.
-- [Django-Cricket-MatchReports](https://github.com/RileyEv/django-cricket-fantasyleague): ⚙️ Under Development. This adds a match report section to the website.
-- [Django-Cricket-PCSP-BBB](https://github.com/RileyEv/django-cricket-pcsp-bbb): ⚙️ Under Development. This adds support for a ball by ball feed from Play Cricket Scorer Pro.
+- [Crickly-playcricket](https://github.com/Crickly/crickly-playcricket): This extension links the core app to the ECB Play Cricket system. It is helpful for clubs who play in leagues that require the results to be added to playcricket.
+- [Crickly-matchreports](https://github.com/Crickly/crickly-matchreports): ⚙️ Under Development. This adds a match report section to the website.
+- [Crickly-fantasyleague](https://github.com/Crickly/crickly-fantasyleague): ⚙️ Under Development. This adds a fantasy league section to the website. A good fundraiser for cricket clubs.
+- [Crickly-PCSP-BBB](https://github.com/Crickly/crickly-pcsp-bbb): ⚙️ Under Development. This adds support for a ball by ball feed from Play Cricket Scorer Pro. Requires crickly-playcricket
