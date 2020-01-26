@@ -10,16 +10,16 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-cricket',
+    name='crickly',
     version='0.1.0',
     packages=find_packages(),
     include_package_data=True,
     license='MIT License',  # example license
     description='A Django app to store and manage cricket matches.',
     long_description=README,
-    url='https://www.rileyevans.co.uk/',
+    url='https://rly.rocks/crickly',
     author='Riley Evans',
-    author_email='riley@rileyevans.co.uk',
+    author_email='crickly@rileyevans.co.uk',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',

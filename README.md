@@ -1,7 +1,7 @@
 🏏 Crickly 
 ================
 
-Django-Cricket is a simple app to store cricket match details.
+Crickly is a simple app to store cricket match details.
 
 📝 _Note_: Development is still in progress and not in a stable state.
 
@@ -10,31 +10,31 @@ Detailed documentation is in the `docs` directory. (Not produced yet. So instead
 🛫 Quick start
 -------------
 
-1. Add `cricket` to your INSTALLED_APPS setting like this
+1. Add `crickly` to your INSTALLED_APPS setting like this
 
 ```py
     INSTALLED_APPS = [
         ...
-        'cricket.core',
+        'crickly.core',
     ]
 ```
 
 2. Include the URLconf in your project urls.py like this
 
 ```py
-    path(r'^matches/', include('cricket.core.urls.matches')),
-    path(r'^stats/', include('cricket.core.urls.stats')),
-    path(r'^api/', include('cricket.core.urls.api')),
+    path(r'^matches/', include('crickly.core.urls.matches')),
+    path(r'^stats/', include('crickly.core.urls.stats')),
+    path(r'^api/', include('crickly.core.urls.api')),
 ```
 
-3. Run `python manage.py migrate` to create the cricket models.
+3. Run `python manage.py migrate` to create the crickly models.
 
 4. Run `python manage.py collectstatic` to get static files.
 
 5. Add this to your base template
 
 ```html
-    <script src="{% static "scripts.js"%}"></script>
+    <script src="{% static "crickly/scripts.js"%}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 ```
 
