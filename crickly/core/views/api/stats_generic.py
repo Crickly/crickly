@@ -131,7 +131,7 @@ class View(BaseView):
                     'kwargs': self.kwargs,
                 }
             )
-        except kwargError, e:
+        except kwargError as e:
             return self.error_message(str(e))
         except kwargError:
             return self.error_message()
