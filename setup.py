@@ -20,6 +20,9 @@ setup(
     url='https://rly.rocks/crickly',
     author='Riley Evans',
     author_email='crickly@rileyevans.co.uk',
+    install_requires=[
+        'Django>=1.16.0,<2.0.0'
+    ],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
