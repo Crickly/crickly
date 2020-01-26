@@ -10,7 +10,9 @@ Detailed documentation is in the `docs` directory. (Not produced yet. So instead
 🛫 Quick start
 -------------
 
-1. Add `crickly` to your INSTALLED_APPS setting like this
+1. Install `pip install crickly`
+
+2. Add `crickly` to your INSTALLED_APPS setting like this
 
 ```py
     INSTALLED_APPS = [
@@ -19,7 +21,7 @@ Detailed documentation is in the `docs` directory. (Not produced yet. So instead
     ]
 ```
 
-2. Include the URLconf in your project urls.py like this
+3. Include the URLconf in your project urls.py like this
 
 ```py
     path(r'^matches/', include('crickly.core.urls.matches')),
@@ -27,21 +29,21 @@ Detailed documentation is in the `docs` directory. (Not produced yet. So instead
     path(r'^api/', include('crickly.core.urls.api')),
 ```
 
-3. Run `python manage.py migrate` to create the crickly models.
+4. Run `python manage.py migrate` to create the crickly models.
 
-4. Run `python manage.py collectstatic` to get static files.
+5. Run `python manage.py collectstatic` to get static files.
 
-5. Add this to your base template
+6. Add this to your base template
 
 ```html
     <script src="{% static "crickly/scripts.js"%}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 ```
 
-6. Start the development server and visit http://127.0.0.1:8000/admin/
+7. Start the development server and visit http://127.0.0.1:8000/admin/
    to create a match (you'll need the Admin app enabled).
 
-7. Visit http://127.0.0.1:8000/matches/ to view match details.
+8. Visit http://127.0.0.1:8000/matches/ to view match details.
    Visit http://127.0.0.1:8000/stats/ to view statistics.
    
    
